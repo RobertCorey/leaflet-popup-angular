@@ -20,8 +20,8 @@
          map.on(this._getEvents(), this);
 
          var that = this;
-         
-         angular.element(document).ready(function() {
+         var root = angular.element(this.options.root) || angular.element(document.querySelectorAll('[ng-app]'));
+         root.ready(function() {
              //Angular magic
              that._compile();
              
@@ -46,7 +46,13 @@
      },
      _compile: function() {
          var that = this;
-         var $injector = angular.element(document).injector();
+         var root = angular.element(this.options.root) || angular.element(document.querySelectorAll('[ng-app]'));
+         var $injector = root.injector();
+
+         if(!$injector) {
+            throw "L.Popup.Angular can't find your Angular app";
+         }
+
          var $rootScope = $injector.get('$rootScope'),
              $compile = $injector.get('$compile'),
              $controller = $injector.get('$controller');
